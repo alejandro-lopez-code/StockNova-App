@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="StockNova.BLL/StockNova.BLL.csproj" />
+  <Project Path="StockNova.DAL/StockNova.DAL.csproj" />
+  <Project Path="StockNova.Entities/StockNova.Entities.csproj" />
+  <Project Path="StockNova.UI/StockNova.UI.csproj" />
+</Solution>
