@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+    <File Path="StockNova.sql" />
+  </Folder>
   <Project Path="StockNova.BLL/StockNova.BLL.csproj" />
   <Project Path="StockNova.DAL/StockNova.DAL.csproj" />
   <Project Path="StockNova.Entities/StockNova.Entities.csproj" />
