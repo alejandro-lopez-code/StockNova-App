@@ -22,7 +22,7 @@ namespace StockNova.UI
                 Primary.BlueGrey800,
                 Primary.BlueGrey900,
                 Primary.BlueGrey500,
-                Accent.Orange400,
+                (Accent)Primary.BlueGrey900,
                 TextShade.WHITE
             );
 
@@ -76,23 +76,34 @@ namespace StockNova.UI
                 {
                     string estado = row.Cells["colEstado"].Value.ToString();
 
+                    Color colorFondo = Color.White;
+                    Color colorTexto = Color.Black;
+
                     switch (estado)
                     {
                         case "Sin Stock":
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(255, 205, 210); // Rojo pastel
-                            row.DefaultCellStyle.ForeColor = Color.DarkRed;
+                            colorFondo = Color.FromArgb(255, 205, 210); // Rojo pastel
+                            colorTexto = Color.DarkRed;
                             break;
 
                         case "Stock Bajo":
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(255, 245, 157); // Amarillo pastel
-                            row.DefaultCellStyle.ForeColor = Color.DarkGoldenrod;
+                            colorFondo = Color.FromArgb(255, 245, 157); // Amarillo pastel
+                            colorTexto = Color.DarkGoldenrod;
                             break;
 
                         case "Normal":
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(200, 230, 201); // Verde pastel
-                            row.DefaultCellStyle.ForeColor = Color.DarkGreen;
+                            colorFondo = Color.FromArgb(200, 230, 201); // Verde pastel
+                            colorTexto = Color.DarkGreen;
                             break;
                     }
+
+                    // Asigna el color normal de la celda
+                    row.DefaultCellStyle.BackColor = colorFondo;
+                    row.DefaultCellStyle.ForeColor = colorTexto;
+
+                    // SOBREESCRIBE EL COLOR AZUL DE SELECCIÓN DE WINFORMS
+                    row.DefaultCellStyle.SelectionBackColor = colorFondo;
+                    row.DefaultCellStyle.SelectionForeColor = colorTexto;
                 }
             }
         }
