@@ -1113,9 +1113,11 @@
             dgvInventario.Size = new Size(980, 211);
             dgvInventario.TabIndex = 4;
             dgvInventario.CellPainting += dgvInventario_CellPainting;
+            dgvInventario.DataBindingComplete += dgvInventario_DataBindingComplete_1;
             // 
             // colCodigo
             // 
+            colCodigo.DataPropertyName = "Codigo";
             colCodigo.HeaderText = "Código";
             colCodigo.MinimumWidth = 6;
             colCodigo.Name = "colCodigo";
@@ -1123,6 +1125,7 @@
             // 
             // colNombre
             // 
+            colNombre.DataPropertyName = "Nombre";
             colNombre.HeaderText = "Nombre";
             colNombre.MinimumWidth = 6;
             colNombre.Name = "colNombre";
@@ -1130,6 +1133,7 @@
             // 
             // colUnidad
             // 
+            colUnidad.DataPropertyName = "Unidad";
             colUnidad.HeaderText = "Unidad";
             colUnidad.MinimumWidth = 6;
             colUnidad.Name = "colUnidad";
@@ -1145,6 +1149,7 @@
             // 
             // colStockMin
             // 
+            colStockMin.DataPropertyName = "StockMinimo";
             colStockMin.HeaderText = "Stock Min.";
             colStockMin.MinimumWidth = 6;
             colStockMin.Name = "colStockMin";
@@ -1152,6 +1157,7 @@
             // 
             // colStockActual
             // 
+            colStockActual.DataPropertyName = "StockActual";
             colStockActual.HeaderText = "Stock Actual";
             colStockActual.MinimumWidth = 6;
             colStockActual.Name = "colStockActual";
@@ -1159,6 +1165,7 @@
             // 
             // colEstado
             // 
+            colEstado.DataPropertyName = "Estado";
             colEstado.HeaderText = "Estado";
             colEstado.MinimumWidth = 6;
             colEstado.Name = "colEstado";
@@ -1195,6 +1202,7 @@
             btnAlertas.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnAlertas.UseAccentColor = false;
             btnAlertas.UseVisualStyleBackColor = true;
+            btnAlertas.Click += btnSoloAlertas_Click;
             // 
             // btnExportarCSV
             // 
@@ -1216,6 +1224,7 @@
             btnExportarCSV.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnExportarCSV.UseAccentColor = false;
             btnExportarCSV.UseVisualStyleBackColor = false;
+            btnExportarCSV.Click += btnExportarCsv_Click;
             // 
             // btnActualizarStock
             // 
@@ -1235,6 +1244,7 @@
             btnActualizarStock.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnActualizarStock.UseAccentColor = false;
             btnActualizarStock.UseVisualStyleBackColor = true;
+            btnActualizarStock.Click += btnActualizarStock_Click;
             // 
             // materialLabel2
             // 
@@ -1849,14 +1859,6 @@
         private TabPage tabEspacio1;
         private TabPage tabEspacio2;
         private TabPage tabEspacio3;
-        private DataGridViewTextBoxColumn colCodigo;
-        private DataGridViewTextBoxColumn colNombre;
-        private DataGridViewTextBoxColumn colUnidad;
-        private DataGridViewTextBoxColumn colCategoria;
-        private DataGridViewTextBoxColumn colStockMin;
-        private DataGridViewTextBoxColumn colStockActual;
-        private DataGridViewTextBoxColumn colEstado;
-        private DataGridViewButtonColumn colAcciones;
         private MaterialSkin.Controls.MaterialCard cardNuevoProducto;
         private MaterialSkin.Controls.MaterialLabel materialLabel3;
         private MaterialSkin.Controls.MaterialComboBox cmbGrupo;
@@ -1933,5 +1935,13 @@
         private MaterialSkin.Controls.MaterialButton btnBuscarProducto;
         private MaterialSkin.Controls.MaterialTextBox2 txtCriterioBusqueda;
         private MaterialSkin.Controls.MaterialLabel materialLabel29;
+        private DataGridViewTextBoxColumn colCodigo;
+        private DataGridViewTextBoxColumn colNombre;
+        private DataGridViewTextBoxColumn colUnidad;
+        private DataGridViewTextBoxColumn colCategoria;
+        private DataGridViewTextBoxColumn colStockMin;
+        private DataGridViewTextBoxColumn colStockActual;
+        private DataGridViewTextBoxColumn colEstado;
+        private DataGridViewButtonColumn colAcciones;
     }
 }

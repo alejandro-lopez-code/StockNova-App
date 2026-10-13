@@ -33,6 +33,10 @@ namespace StockNova.UI
 
             // Carga las filas de prueba y les aplica el color
             CargarDatosPrueba();
+
+            dgvInventario.ClearSelection();
+            dgvInventario.CurrentCell = null;
+
         }
 
         private void tcMenuPrincipal_SelectedIndexChanged(object sender, EventArgs e)
@@ -110,35 +114,46 @@ namespace StockNova.UI
 
         private void CargarDatosPrueba()
         {
-            // Productos tecnológicos con el formato exacto
-            dgvInventario.Rows.Add("TEC-001", "LAPTOP DELL LATITUDE 5500", "Unidades", "Laptops", "5", "0", "Sin Stock");
-            dgvInventario.Rows.Add("TEC-002", "MEMORIA RAM DDR4 16GB", "Unidades", "Componentes", "10", "4", "Stock Bajo");
-            dgvInventario.Rows.Add("TEC-003", "DISCO SÓLIDO SSD 1TB NVME", "Unidades", "Almacenamiento", "8", "15", "Normal");
-            dgvInventario.Rows.Add("TEC-004", "TECLADO MECÁNICO RGB", "Unidades", "Periféricos", "6", "12", "Normal");
-
-            AplicarEstiloEstadoInventario();
-
-            // CENTRAR ÚNICAMENTE CATEGORÍA, STOCK MIN Y STOCK ACTUAL
-            if (dgvInventario.Columns.Contains("colCategoria"))
+            try
             {
-                dgvInventario.Columns["colCategoria"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                dgvInventario.Columns["colCategoria"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
+                StockNova.DAL.ProductoDAL productoDAL = new StockNova.DAL.ProductoDAL();
+                System.Data.DataTable dtProductos = productoDAL.ListarProductos();
 
-            if (dgvInventario.Columns.Contains("colStockMin"))
+                // 1. Evitamos que se dupliquen las columnas creadas a mano
+                dgvInventario.AutoGenerateColumns = false;
+
+                // 2. Asignamos los datos
+                dgvInventario.DataSource = dtProductos;
+
+                // 3. Aplicamos tus estilos visuales y colores personalizados
+                AplicarEstiloEstadoInventario();
+
+                // 4. CENTRAR ÚNICAMENTE CATEGORÍA, STOCK MIN Y STOCK ACTUAL
+                if (dgvInventario.Columns.Contains("Categoria"))
+                {
+                    dgvInventario.Columns["Categoria"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["Categoria"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                if (dgvInventario.Columns.Contains("StockMinimo"))
+                {
+                    dgvInventario.Columns["StockMinimo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["StockMinimo"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                if (dgvInventario.Columns.Contains("StockActual"))
+                {
+                    dgvInventario.Columns["StockActual"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["StockActual"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                dgvInventario.ClearSelection();
+                dgvInventario.CurrentCell = null;
+            }
+            catch (Exception ex)
             {
-                dgvInventario.Columns["colStockMin"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                dgvInventario.Columns["colStockMin"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                System.Windows.Forms.MessageBox.Show("Error al cargar los datos del inventario: " + ex.Message, "Error de Conexión", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
-
-            if (dgvInventario.Columns.Contains("colStockActual"))
-            {
-                dgvInventario.Columns["colStockActual"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                dgvInventario.Columns["colStockActual"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-
-            dgvInventario.ClearSelection();
-            dgvInventario.CurrentCell = null;
         }
 
         private void dgvInventario_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -199,6 +214,123 @@ namespace StockNova.UI
 
                 e.Handled = true; // Indicar que la celda ya se dibujó completamente
             }
+        }
+
+        private void btnActualizarStock_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Trae los datos más recientes directo de la base de datos SQL Server
+                StockNova.DAL.ProductoDAL productoDAL = new StockNova.DAL.ProductoDAL();
+                System.Data.DataTable dtProductos = productoDAL.ListarProductos();
+
+                dgvInventario.AutoGenerateColumns = false;
+                dgvInventario.DataSource = dtProductos;
+
+                // Aplicamos tus estilos visuales, colores y centrados
+                AplicarEstiloEstadoInventario();
+
+                if (dgvInventario.Columns.Contains("Categoria"))
+                {
+                    dgvInventario.Columns["Categoria"].DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["Categoria"].HeaderCell.Style.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                if (dgvInventario.Columns.Contains("StockMinimo"))
+                {
+                    dgvInventario.Columns["StockMinimo"].DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["StockMinimo"].HeaderCell.Style.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                if (dgvInventario.Columns.Contains("StockActual"))
+                {
+                    dgvInventario.Columns["StockActual"].DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                    dgvInventario.Columns["StockActual"].HeaderCell.Style.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+                }
+
+                // Limpiamos cualquier selección por defecto
+                dgvInventario.ClearSelection();
+                dgvInventario.CurrentCell = null;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error al actualizar el stock: " + ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnSoloAlertas_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                StockNova.DAL.ProductoDAL productoDAL = new StockNova.DAL.ProductoDAL();
+                System.Data.DataTable dt = productoDAL.ListarProductos();
+
+                // Filtramos el DataView para mostrar únicamente las alertas críticas
+                System.Data.DataView dv = dt.DefaultView;
+                dv.RowFilter = "Estado = 'Sin Stock' OR Estado = 'Stock Bajo'";
+
+                dgvInventario.AutoGenerateColumns = false;
+                dgvInventario.DataSource = dv;
+
+                AplicarEstiloEstadoInventario();
+
+                dgvInventario.ClearSelection();
+                dgvInventario.CurrentCell = null;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error al filtrar las alertas: " + ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnExportarCsv_Click(object sender, EventArgs e)
+        {
+            using (System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog())
+            {
+                sfd.Filter = "Archivo CSV (*.csv)|*.csv";
+                sfd.FileName = "Inventario_StockNova_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    try
+                    {
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+                        // Cabeceras de columnas
+                        foreach (System.Windows.Forms.DataGridViewColumn col in dgvInventario.Columns)
+                        {
+                            sb.Append(col.HeaderText + ",");
+                        }
+                        sb.AppendLine();
+
+                        // Filas de datos visibles en la tabla
+                        foreach (System.Windows.Forms.DataGridViewRow row in dgvInventario.Rows)
+                        {
+                            if (!row.IsNewRow)
+                            {
+                                foreach (System.Windows.Forms.DataGridViewCell cell in row.Cells)
+                                {
+                                    sb.Append("\"" + (cell.Value?.ToString() ?? "") + "\",");
+                                }
+                                sb.AppendLine();
+                            }
+                        }
+
+                        System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), System.Text.Encoding.UTF8);
+                        System.Windows.Forms.MessageBox.Show("Inventario exportado exitosamente.", "Éxito", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Error al exportar el archivo: " + ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void dgvInventario_DataBindingComplete_1(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dgvInventario.ClearSelection();
+            dgvInventario.CurrentCell = null;
         }
     }
 }
