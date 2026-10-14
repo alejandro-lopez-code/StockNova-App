@@ -541,6 +541,7 @@
             btnLimpiar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnLimpiar.UseAccentColor = false;
             btnLimpiar.UseVisualStyleBackColor = true;
+            btnLimpiar.Click += btnLimpiar_Click;
             // 
             // btnRegistrarProducto
             // 
@@ -560,6 +561,7 @@
             btnRegistrarProducto.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnRegistrarProducto.UseAccentColor = false;
             btnRegistrarProducto.UseVisualStyleBackColor = true;
+            btnRegistrarProducto.Click += btnRegistrarProducto_Click;
             // 
             // materialLabel8
             // 

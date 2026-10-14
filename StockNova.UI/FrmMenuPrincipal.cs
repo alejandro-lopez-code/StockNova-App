@@ -1,7 +1,9 @@
-﻿using System.Drawing;
-using MaterialSkin;
+﻿using MaterialSkin;
 using MaterialSkin.Controls;
+using StockNova.DAL;
 using StockNova.Entities;
+using StockNova.Models;
+using System.Drawing;
 
 namespace StockNova.UI
 {
@@ -331,6 +333,83 @@ namespace StockNova.UI
         {
             dgvInventario.ClearSelection();
             dgvInventario.CurrentCell = null;
+        }
+
+        // Instancia de la DAL para productos
+        private readonly ProductoDAL _productoDAL = new ProductoDAL();
+
+        // Evento del botón REGISTRAR PRODUCTO 💾
+        private void btnRegistrarProducto_Click(object sender, EventArgs e)
+        {
+            // 1. Validaciones básicas de campos obligatorios
+            if (string.IsNullOrWhiteSpace(txtCodigo.Text))
+            {
+                MessageBox.Show("Por favor, ingresa el código del producto.", "Campo Obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtCodigo.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Por favor, ingresa el nombre del producto.", "Campo Obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return;
+            }
+
+            // 2. Validar stock mínimo
+            int stockMinimo = 0;
+            if (!string.IsNullOrWhiteSpace(txtStockMinimo.Text) && !int.TryParse(txtStockMinimo.Text.Trim(), out stockMinimo))
+            {
+                MessageBox.Show("El stock mínimo debe ser un número entero válido.", "Valor Incorrecto", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtStockMinimo.Focus();
+                return;
+            }
+
+            // 3. Crear objeto entidad
+            Producto nuevoProducto = new Producto
+            {
+                Codigo = txtCodigo.Text.Trim(),
+                Nombre = txtNombre.Text.Trim(),
+                UnidadMedida = cmbUnidadMedida.SelectedItem?.ToString() ?? cmbUnidadMedida.Text.Trim(),
+                Categoria = cmbGrupo.SelectedItem?.ToString() ?? cmbGrupo.Text.Trim(),
+                StockMinimo = stockMinimo
+            };
+
+            // 4. Guardar en base de datos
+            try
+            {
+                bool guardado = _productoDAL.InsertarProducto(nuevoProducto);
+                if (guardado)
+                {
+                    MessageBox.Show("¡Producto registrado con éxito!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al registrar el producto:\n{ex.Message}", "Error en BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Evento del botón LIMPIAR 🧹
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            LimpiarFormularioProducto();
+        }
+
+        // Método auxiliar para limpiar los controles del formulario de productos
+        private void LimpiarFormularioProducto()
+        {
+            txtCodigo.Clear();
+            txtNombre.Clear();
+            txtStockMinimo.Clear();
+
+            if (cmbUnidadMedida.Items.Count > 0) cmbUnidadMedida.SelectedIndex = 0;
+            else cmbUnidadMedida.Text = string.Empty;
+
+            if (cmbGrupo.Items.Count > 0) cmbGrupo.SelectedIndex = 0;
+            else cmbGrupo.Text = string.Empty;
+
+            txtCodigo.Focus();
         }
     }
 }

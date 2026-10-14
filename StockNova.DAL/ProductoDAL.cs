@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockNova.Models;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -46,6 +47,36 @@ namespace StockNova.DAL
             }
 
             return tablaProductos;
+        }
+
+        // 2. EL NUEVO MÉTODO QUE AGREGAMOS (Para registrar nuevos productos) 💾
+        public bool InsertarProducto(Producto prod)
+        {
+            using (SqlConnection conexion = new SqlConnection(Conexion.Cadena))
+            {
+                string query = @"INSERT INTO Productos (Codigo, Nombre, UnidadMedida, Categoria, StockMinimo, StockActual) 
+                                VALUES (@Codigo, @Nombre, @UnidadMedida, @Categoria, @StockMinimo, 0)";
+
+                using (SqlCommand cmd = new SqlCommand(query, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@Codigo", prod.Codigo);
+                    cmd.Parameters.AddWithValue("@Nombre", prod.Nombre);
+                    cmd.Parameters.AddWithValue("@UnidadMedida", prod.UnidadMedida ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Categoria", prod.Categoria ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@StockMinimo", prod.StockMinimo);
+
+                    try
+                    {
+                        conexion.Open();
+                        int filasAfectadas = cmd.ExecuteNonQuery();
+                        return filasAfectadas > 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error al guardar el producto: " + ex.Message);
+                    }
+                }
+            }
         }
     }
 }
