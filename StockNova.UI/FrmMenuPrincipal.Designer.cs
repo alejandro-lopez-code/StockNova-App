@@ -835,6 +835,7 @@
             btnLimpiarMovimiento.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnLimpiarMovimiento.UseAccentColor = false;
             btnLimpiarMovimiento.UseVisualStyleBackColor = true;
+            btnLimpiarMovimiento.Click += btnLimpiarMovimiento_Click;
             // 
             // btnGuardarMovimiento
             // 
@@ -854,6 +855,7 @@
             btnGuardarMovimiento.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnGuardarMovimiento.UseAccentColor = false;
             btnGuardarMovimiento.UseVisualStyleBackColor = true;
+            btnGuardarMovimiento.Click += btnGuardarMovimiento_Click;
             // 
             // materialLabel14
             // 
@@ -957,7 +959,7 @@
             cmbTipoMovimiento.FormattingEnabled = true;
             cmbTipoMovimiento.IntegralHeight = false;
             cmbTipoMovimiento.ItemHeight = 43;
-            cmbTipoMovimiento.Items.AddRange(new object[] { "Entrada (Ingreso por Compra)", "", "", "Salida (Venta / Ajuste)", "", "", "Ajuste de Inventario", "", "", "Devolución" });
+            cmbTipoMovimiento.Items.AddRange(new object[] { "Entrada (Ingreso por Compra)", "Salida (Venta / Ajuste)", "Ajuste de Inventario", "Devolución" });
             cmbTipoMovimiento.Location = new Point(537, 110);
             cmbTipoMovimiento.MaxDropDownItems = 4;
             cmbTipoMovimiento.MouseState = MaterialSkin.MouseState.OUT;

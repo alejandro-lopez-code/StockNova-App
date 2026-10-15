@@ -411,5 +411,71 @@ namespace StockNova.UI
 
             txtCodigo.Focus();
         }
+
+        private MovimientoDAL _movimientoDAL = new MovimientoDAL();
+
+        private void btnGuardarMovimiento_Click(object sender, EventArgs e)
+        {
+            // 1. Validaciones de entrada
+            if (string.IsNullOrWhiteSpace(txtCodigoMovimiento.Text))
+            {
+                MessageBox.Show("Por favor, ingrese el código del producto.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(txtCantidadMovimiento.Text, out int cantidad) || cantidad <= 0)
+            {
+                MessageBox.Show("Ingrese una cantidad válida mayor a cero.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                string codigoProducto = txtCodigoMovimiento.Text.Trim();
+
+                // 2. Obtener el IdProducto desde la capa de datos
+                ProductoDAL productoDAL = new ProductoDAL();
+                int idProducto = productoDAL.ObtenerIdPorCodigo(codigoProducto);
+
+                if (idProducto == 0)
+                {
+                    MessageBox.Show("El código de producto ingresado no existe en el sistema.", "Producto No Encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DateTime fecha = dtpFechaMovimiento.Value;
+                string tipo = cmbTipoMovimiento.SelectedItem?.ToString() ?? "Entrada (Ingreso por Compra)";
+                string observaciones = txtObservaciones.Text.Trim();
+
+                // Usamos un ID de usuario por defecto (1) para evitar errores de sesión
+                int idUsuario = 1;
+
+                // 3. Registrar el movimiento y actualizar stock
+                bool exito = _movimientoDAL.RegistrarMovimiento(idProducto, tipo, cantidad, fecha, idUsuario, observaciones);
+
+                if (exito)
+                {
+                    MessageBox.Show("¡Movimiento registrado y stock actualizado con éxito!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar el movimiento: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnLimpiarMovimiento_Click(object sender, EventArgs e)
+        {
+            LimpiarFormularioMovimientos();
+        }
+
+        private void LimpiarFormularioMovimientos()
+        {
+            txtCodigoMovimiento.Clear();
+            txtCantidadMovimiento.Clear();
+            txtObservaciones.Clear();
+            if (cmbTipoMovimiento.Items.Count > 0) cmbTipoMovimiento.SelectedIndex = 0;
+            dtpFechaMovimiento.Value = DateTime.Now;
+        }
     }
 }

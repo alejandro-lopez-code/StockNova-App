@@ -78,5 +78,24 @@ namespace StockNova.DAL
                 }
             }
         }
+
+        public int ObtenerIdPorCodigo(string codigo)
+        {
+            int idProducto = 0;
+            using (SqlConnection conexion = new SqlConnection(Conexion.Cadena))
+            {
+                string query = "SELECT IdProducto FROM Productos WHERE Codigo = @Codigo";
+                SqlCommand cmd = new SqlCommand(query, conexion);
+                cmd.Parameters.AddWithValue("@Codigo", codigo);
+
+                conexion.Open();
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    idProducto = Convert.ToInt32(result);
+                }
+            }
+            return idProducto;
+        }
     }
 }
