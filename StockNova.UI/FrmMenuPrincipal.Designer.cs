@@ -36,7 +36,8 @@
             tcMenuPrincipal = new MaterialSkin.Controls.MaterialTabControl();
             tabDashboard = new TabPage();
             cardAlertasStock = new MaterialSkin.Controls.MaterialCard();
-            dataGridView1 = new DataGridView();
+            lblMensajeAlerta = new MaterialSkin.Controls.MaterialLabel();
+            dgvAlertasStock = new DataGridView();
             btnVerAlertas = new MaterialSkin.Controls.MaterialButton();
             btnActualizarDashboard = new MaterialSkin.Controls.MaterialButton();
             materialLabel23 = new MaterialSkin.Controls.MaterialLabel();
@@ -104,6 +105,8 @@
             tabReportes = new TabPage();
             materialLabel17 = new MaterialSkin.Controls.MaterialLabel();
             cardReporteMovimientos = new MaterialSkin.Controls.MaterialCard();
+            dgvReporteMovimientos = new DataGridView();
+            lblEstadoReporte = new MaterialSkin.Controls.MaterialLabel();
             btnExportarReporte = new MaterialSkin.Controls.MaterialButton();
             btnGenerarReporte = new MaterialSkin.Controls.MaterialButton();
             cmbFiltroTipo = new MaterialSkin.Controls.MaterialComboBox();
@@ -139,7 +142,7 @@
             tcMenuPrincipal.SuspendLayout();
             tabDashboard.SuspendLayout();
             cardAlertasStock.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvAlertasStock).BeginInit();
             materialCard5.SuspendLayout();
             materialCard4.SuspendLayout();
             materialCard3.SuspendLayout();
@@ -153,6 +156,7 @@
             ((System.ComponentModel.ISupportInitialize)dgvInventario).BeginInit();
             tabReportes.SuspendLayout();
             cardReporteMovimientos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvReporteMovimientos).BeginInit();
             tabBuscar.SuspendLayout();
             cardBuscarProductos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvResultadosBusqueda).BeginInit();
@@ -181,7 +185,7 @@
             tcMenuPrincipal.Multiline = true;
             tcMenuPrincipal.Name = "tcMenuPrincipal";
             tcMenuPrincipal.SelectedIndex = 0;
-            tcMenuPrincipal.Size = new Size(1302, 564);
+            tcMenuPrincipal.Size = new Size(1302, 597);
             tcMenuPrincipal.TabIndex = 0;
             tcMenuPrincipal.SelectedIndexChanged += tcMenuPrincipal_SelectedIndexChanged;
             // 
@@ -196,7 +200,7 @@
             tabDashboard.Location = new Point(4, 29);
             tabDashboard.Name = "tabDashboard";
             tabDashboard.Padding = new Padding(3);
-            tabDashboard.Size = new Size(1294, 531);
+            tabDashboard.Size = new Size(1294, 564);
             tabDashboard.TabIndex = 0;
             tabDashboard.Text = "Dashboard";
             tabDashboard.UseVisualStyleBackColor = true;
@@ -205,7 +209,8 @@
             // 
             cardAlertasStock.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cardAlertasStock.BackColor = Color.FromArgb(255, 255, 255);
-            cardAlertasStock.Controls.Add(dataGridView1);
+            cardAlertasStock.Controls.Add(lblMensajeAlerta);
+            cardAlertasStock.Controls.Add(dgvAlertasStock);
             cardAlertasStock.Controls.Add(btnVerAlertas);
             cardAlertasStock.Controls.Add(btnActualizarDashboard);
             cardAlertasStock.Controls.Add(materialLabel23);
@@ -216,15 +221,28 @@
             cardAlertasStock.MouseState = MaterialSkin.MouseState.HOVER;
             cardAlertasStock.Name = "cardAlertasStock";
             cardAlertasStock.Padding = new Padding(14);
-            cardAlertasStock.Size = new Size(1078, 235);
+            cardAlertasStock.Size = new Size(1087, 297);
             cardAlertasStock.TabIndex = 4;
             // 
-            // dataGridView1
+            // lblMensajeAlerta
             // 
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.BackgroundColor = Color.White;
-            dataGridView1.BorderStyle = BorderStyle.None;
-            dataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            lblMensajeAlerta.AutoSize = true;
+            lblMensajeAlerta.Depth = 0;
+            lblMensajeAlerta.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            lblMensajeAlerta.Location = new Point(35, 122);
+            lblMensajeAlerta.MouseState = MaterialSkin.MouseState.HOVER;
+            lblMensajeAlerta.Name = "lblMensajeAlerta";
+            lblMensajeAlerta.Size = new Size(1, 0);
+            lblMensajeAlerta.TabIndex = 4;
+            lblMensajeAlerta.Visible = false;
+            // 
+            // dgvAlertasStock
+            // 
+            dgvAlertasStock.AllowUserToAddRows = false;
+            dgvAlertasStock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvAlertasStock.BackgroundColor = Color.White;
+            dgvAlertasStock.BorderStyle = BorderStyle.None;
+            dgvAlertasStock.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = Color.Navy;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -232,16 +250,16 @@
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.Location = new Point(35, 131);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(1004, 66);
-            dataGridView1.TabIndex = 3;
+            dgvAlertasStock.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvAlertasStock.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvAlertasStock.EnableHeadersVisualStyles = false;
+            dgvAlertasStock.Location = new Point(35, 159);
+            dgvAlertasStock.Name = "dgvAlertasStock";
+            dgvAlertasStock.RowHeadersVisible = false;
+            dgvAlertasStock.RowHeadersWidth = 51;
+            dgvAlertasStock.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAlertasStock.Size = new Size(1026, 110);
+            dgvAlertasStock.TabIndex = 3;
             // 
             // btnVerAlertas
             // 
@@ -261,6 +279,7 @@
             btnVerAlertas.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnVerAlertas.UseAccentColor = false;
             btnVerAlertas.UseVisualStyleBackColor = true;
+            btnVerAlertas.Click += btnVerAlertasStock_Click;
             // 
             // btnActualizarDashboard
             // 
@@ -280,6 +299,7 @@
             btnActualizarDashboard.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnActualizarDashboard.UseAccentColor = false;
             btnActualizarDashboard.UseVisualStyleBackColor = true;
+            btnActualizarDashboard.Click += btnActualizarDashboard_Click;
             // 
             // materialLabel23
             // 
@@ -478,7 +498,7 @@
             tabNuevoProducto.Location = new Point(4, 29);
             tabNuevoProducto.Name = "tabNuevoProducto";
             tabNuevoProducto.Padding = new Padding(3);
-            tabNuevoProducto.Size = new Size(1294, 531);
+            tabNuevoProducto.Size = new Size(1294, 564);
             tabNuevoProducto.TabIndex = 1;
             tabNuevoProducto.Text = "Nuevo Producto";
             tabNuevoProducto.UseVisualStyleBackColor = true;
@@ -541,7 +561,6 @@
             btnLimpiar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnLimpiar.UseAccentColor = false;
             btnLimpiar.UseVisualStyleBackColor = true;
-            btnLimpiar.Click += btnLimpiar_Click;
             // 
             // btnRegistrarProducto
             // 
@@ -772,7 +791,7 @@
             tabMovimientos.Controls.Add(cardNuevoMovimiento);
             tabMovimientos.Location = new Point(4, 29);
             tabMovimientos.Name = "tabMovimientos";
-            tabMovimientos.Size = new Size(1294, 531);
+            tabMovimientos.Size = new Size(1294, 564);
             tabMovimientos.TabIndex = 2;
             tabMovimientos.Text = "Movimientos";
             tabMovimientos.UseVisualStyleBackColor = true;
@@ -1053,7 +1072,7 @@
             tabInventario.Controls.Add(materialLabel1);
             tabInventario.Location = new Point(4, 29);
             tabInventario.Name = "tabInventario";
-            tabInventario.Size = new Size(1294, 531);
+            tabInventario.Size = new Size(1294, 564);
             tabInventario.TabIndex = 3;
             tabInventario.Text = "Inventario";
             tabInventario.UseVisualStyleBackColor = true;
@@ -1283,7 +1302,7 @@
             tabReportes.Controls.Add(cardReporteMovimientos);
             tabReportes.Location = new Point(4, 29);
             tabReportes.Name = "tabReportes";
-            tabReportes.Size = new Size(1294, 531);
+            tabReportes.Size = new Size(1294, 564);
             tabReportes.TabIndex = 4;
             tabReportes.Text = "Reportes";
             tabReportes.UseVisualStyleBackColor = true;
@@ -1305,6 +1324,8 @@
             // 
             cardReporteMovimientos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cardReporteMovimientos.BackColor = Color.FromArgb(255, 255, 255);
+            cardReporteMovimientos.Controls.Add(dgvReporteMovimientos);
+            cardReporteMovimientos.Controls.Add(lblEstadoReporte);
             cardReporteMovimientos.Controls.Add(btnExportarReporte);
             cardReporteMovimientos.Controls.Add(btnGenerarReporte);
             cardReporteMovimientos.Controls.Add(cmbFiltroTipo);
@@ -1321,8 +1342,31 @@
             cardReporteMovimientos.MouseState = MaterialSkin.MouseState.HOVER;
             cardReporteMovimientos.Name = "cardReporteMovimientos";
             cardReporteMovimientos.Padding = new Padding(14);
-            cardReporteMovimientos.Size = new Size(1139, 330);
+            cardReporteMovimientos.Size = new Size(1078, 431);
             cardReporteMovimientos.TabIndex = 0;
+            // 
+            // dgvReporteMovimientos
+            // 
+            dgvReporteMovimientos.AllowUserToAddRows = false;
+            dgvReporteMovimientos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvReporteMovimientos.Location = new Point(73, 285);
+            dgvReporteMovimientos.Name = "dgvReporteMovimientos";
+            dgvReporteMovimientos.ReadOnly = true;
+            dgvReporteMovimientos.RowHeadersVisible = false;
+            dgvReporteMovimientos.RowHeadersWidth = 51;
+            dgvReporteMovimientos.Size = new Size(876, 116);
+            dgvReporteMovimientos.TabIndex = 10;
+            // 
+            // lblEstadoReporte
+            // 
+            lblEstadoReporte.AutoSize = true;
+            lblEstadoReporte.Depth = 0;
+            lblEstadoReporte.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            lblEstadoReporte.Location = new Point(73, 242);
+            lblEstadoReporte.MouseState = MaterialSkin.MouseState.HOVER;
+            lblEstadoReporte.Name = "lblEstadoReporte";
+            lblEstadoReporte.Size = new Size(1, 0);
+            lblEstadoReporte.TabIndex = 9;
             // 
             // btnExportarReporte
             // 
@@ -1331,7 +1375,7 @@
             btnExportarReporte.Depth = 0;
             btnExportarReporte.HighEmphasis = true;
             btnExportarReporte.Icon = null;
-            btnExportarReporte.Location = new Point(265, 225);
+            btnExportarReporte.Location = new Point(251, 183);
             btnExportarReporte.Margin = new Padding(4, 6, 4, 6);
             btnExportarReporte.MouseState = MaterialSkin.MouseState.HOVER;
             btnExportarReporte.Name = "btnExportarReporte";
@@ -1342,6 +1386,7 @@
             btnExportarReporte.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnExportarReporte.UseAccentColor = false;
             btnExportarReporte.UseVisualStyleBackColor = true;
+            btnExportarReporte.Click += btnExportarReporte_Click;
             // 
             // btnGenerarReporte
             // 
@@ -1350,7 +1395,7 @@
             btnGenerarReporte.Depth = 0;
             btnGenerarReporte.HighEmphasis = true;
             btnGenerarReporte.Icon = null;
-            btnGenerarReporte.Location = new Point(73, 225);
+            btnGenerarReporte.Location = new Point(73, 183);
             btnGenerarReporte.Margin = new Padding(4, 6, 4, 6);
             btnGenerarReporte.MouseState = MaterialSkin.MouseState.HOVER;
             btnGenerarReporte.Name = "btnGenerarReporte";
@@ -1361,6 +1406,7 @@
             btnGenerarReporte.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnGenerarReporte.UseAccentColor = false;
             btnGenerarReporte.UseVisualStyleBackColor = true;
+            btnGenerarReporte.Click += btnGenerarReporte_Click;
             // 
             // cmbFiltroTipo
             // 
@@ -1445,7 +1491,7 @@
             lblTituloReportes.Depth = 0;
             lblTituloReportes.Font = new Font("Roboto", 24F, FontStyle.Bold, GraphicsUnit.Pixel);
             lblTituloReportes.FontType = MaterialSkin.MaterialSkinManager.fontType.H5;
-            lblTituloReportes.Location = new Point(31, 29);
+            lblTituloReportes.Location = new Point(26, 25);
             lblTituloReportes.MouseState = MaterialSkin.MouseState.HOVER;
             lblTituloReportes.Name = "lblTituloReportes";
             lblTituloReportes.Size = new Size(276, 29);
@@ -1458,7 +1504,7 @@
             tabBuscar.Controls.Add(cardBuscarProductos);
             tabBuscar.Location = new Point(4, 29);
             tabBuscar.Name = "tabBuscar";
-            tabBuscar.Size = new Size(1294, 531);
+            tabBuscar.Size = new Size(1294, 564);
             tabBuscar.TabIndex = 5;
             tabBuscar.Text = "Buscar";
             tabBuscar.UseVisualStyleBackColor = true;
@@ -1509,6 +1555,7 @@
             // 
             // dgvResultadosBusqueda
             // 
+            dgvResultadosBusqueda.AllowUserToAddRows = false;
             dgvResultadosBusqueda.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvResultadosBusqueda.BackgroundColor = Color.White;
             dgvResultadosBusqueda.BorderStyle = BorderStyle.None;
@@ -1540,6 +1587,7 @@
             btnLimpiarBusqueda.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnLimpiarBusqueda.UseAccentColor = false;
             btnLimpiarBusqueda.UseVisualStyleBackColor = true;
+            btnLimpiarBusqueda.Click += btnLimpiarBusqueda_Click;
             // 
             // btnBuscarProducto
             // 
@@ -1559,6 +1607,7 @@
             btnBuscarProducto.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnBuscarProducto.UseAccentColor = false;
             btnBuscarProducto.UseVisualStyleBackColor = true;
+            btnBuscarProducto.Click += btnBuscar_Click;
             // 
             // txtCriterioBusqueda
             // 
@@ -1607,7 +1656,7 @@
             tabConfiguracion.Controls.Add(cardHerramientasAdmin);
             tabConfiguracion.Location = new Point(4, 29);
             tabConfiguracion.Name = "tabConfiguracion";
-            tabConfiguracion.Size = new Size(1294, 531);
+            tabConfiguracion.Size = new Size(1294, 564);
             tabConfiguracion.TabIndex = 6;
             tabConfiguracion.Text = "Configuración";
             tabConfiguracion.UseVisualStyleBackColor = true;
@@ -1757,7 +1806,7 @@
             // 
             tabEspacio1.Location = new Point(4, 29);
             tabEspacio1.Name = "tabEspacio1";
-            tabEspacio1.Size = new Size(1294, 531);
+            tabEspacio1.Size = new Size(1294, 564);
             tabEspacio1.TabIndex = 8;
             tabEspacio1.UseVisualStyleBackColor = true;
             // 
@@ -1765,7 +1814,7 @@
             // 
             tabEspacio2.Location = new Point(4, 29);
             tabEspacio2.Name = "tabEspacio2";
-            tabEspacio2.Size = new Size(1294, 531);
+            tabEspacio2.Size = new Size(1294, 564);
             tabEspacio2.TabIndex = 9;
             tabEspacio2.UseVisualStyleBackColor = true;
             // 
@@ -1773,7 +1822,7 @@
             // 
             tabEspacio3.Location = new Point(4, 29);
             tabEspacio3.Name = "tabEspacio3";
-            tabEspacio3.Size = new Size(1294, 531);
+            tabEspacio3.Size = new Size(1294, 564);
             tabEspacio3.TabIndex = 10;
             tabEspacio3.UseVisualStyleBackColor = true;
             // 
@@ -1781,7 +1830,7 @@
             // 
             tabCerrarSesion.Location = new Point(4, 29);
             tabCerrarSesion.Name = "tabCerrarSesion";
-            tabCerrarSesion.Size = new Size(1294, 531);
+            tabCerrarSesion.Size = new Size(1294, 564);
             tabCerrarSesion.TabIndex = 7;
             tabCerrarSesion.Text = "Cerrar Sesión";
             tabCerrarSesion.UseVisualStyleBackColor = true;
@@ -1790,7 +1839,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1308, 631);
+            ClientSize = new Size(1308, 664);
             Controls.Add(tcMenuPrincipal);
             DrawerTabControl = tcMenuPrincipal;
             Name = "FrmMenuPrincipal";
@@ -1802,7 +1851,7 @@
             tabDashboard.PerformLayout();
             cardAlertasStock.ResumeLayout(false);
             cardAlertasStock.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvAlertasStock).EndInit();
             materialCard5.ResumeLayout(false);
             materialCard5.PerformLayout();
             materialCard4.ResumeLayout(false);
@@ -1828,6 +1877,7 @@
             tabReportes.PerformLayout();
             cardReporteMovimientos.ResumeLayout(false);
             cardReporteMovimientos.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvReporteMovimientos).EndInit();
             tabBuscar.ResumeLayout(false);
             tabBuscar.PerformLayout();
             cardBuscarProductos.ResumeLayout(false);
@@ -1921,7 +1971,7 @@
         private MaterialSkin.Controls.MaterialButton btnVerAlertas;
         private MaterialSkin.Controls.MaterialButton btnActualizarDashboard;
         private MaterialSkin.Controls.MaterialLabel materialLabel23;
-        private DataGridView dataGridView1;
+        private DataGridView dgvAlertasStock;
         private MaterialSkin.Controls.MaterialLabel materialLabel25;
         private MaterialSkin.Controls.MaterialCard cardHerramientasAdmin;
         private Panel pnlEstadoConfig;
@@ -1947,5 +1997,8 @@
         private DataGridViewTextBoxColumn colStockActual;
         private DataGridViewTextBoxColumn colEstado;
         private DataGridViewButtonColumn colAcciones;
+        private MaterialSkin.Controls.MaterialLabel lblMensajeAlerta;
+        private MaterialSkin.Controls.MaterialLabel lblEstadoReporte;
+        private DataGridView dgvReporteMovimientos;
     }
 }

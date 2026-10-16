@@ -3,6 +3,7 @@ using MaterialSkin.Controls;
 using StockNova.DAL;
 using StockNova.Entities;
 using StockNova.Models;
+using System.Data;
 using System.Drawing;
 
 namespace StockNova.UI
@@ -476,6 +477,409 @@ namespace StockNova.UI
             txtObservaciones.Clear();
             if (cmbTipoMovimiento.Items.Count > 0) cmbTipoMovimiento.SelectedIndex = 0;
             dtpFechaMovimiento.Value = DateTime.Now;
+        }
+
+        // Método principal para refrescar todo el Dashboard (Tarjetas y datos)
+        private void CargarDashboardCompleto()
+        {
+            try
+            {
+                DashboardDAL dashboardDAL = new DashboardDAL();
+
+                // 1. Actualizar las tarjetas de métricas superiores
+                var metricas = dashboardDAL.ObtenerMetricasDashboard();
+                lblTotalProductos.Text = metricas.totalProductos.ToString();
+                lblTotalMovimientos.Text = metricas.totalMovimientos.ToString();
+                lblSinStock.Text = metricas.sinStock.ToString();
+                lblStockBajo.Text = metricas.stockBajo.ToString();
+
+                // 2. Cargar por defecto las alertas en la grilla para que siempre tenga datos actualizados
+                ActualizarGrillaAlertas();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar el Dashboard: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Método para refrescar el DataGridView y desmarcar selecciones
+        private void ActualizarGrillaAlertas()
+        {
+            DashboardDAL dashboardDAL = new DashboardDAL();
+            DataTable dtAlertas = dashboardDAL.ObtenerProductosConAlertaStock();
+
+            dgvAlertasStock.DataSource = dtAlertas;
+
+            int totalAlertas = dtAlertas.Rows.Count;
+
+            if (totalAlertas > 0)
+            {
+                // 1. Estilo del Banner de Alerta en Amarillo (Fondo amarillo suave, texto oscuro/marrón)
+                lblMensajeAlerta.BackColor = Color.FromArgb(254, 243, 199); // Amarillo claro
+                lblMensajeAlerta.ForeColor = Color.FromArgb(146, 64, 14);   // Marrón/Naranja oscuro
+                lblMensajeAlerta.Text = $"   ⚠️  {totalAlertas} producto(s) requieren atención por stock bajo o agotado.";
+                lblMensajeAlerta.Visible = true;
+            }
+            else
+            {
+                // Banner verde si no hay alertas
+                lblMensajeAlerta.BackColor = Color.FromArgb(220, 252, 231);
+                lblMensajeAlerta.ForeColor = Color.FromArgb(22, 101, 52);
+                lblMensajeAlerta.Text = "   ✅ ¡Todo en orden! No hay productos con alertas de stock.";
+                lblMensajeAlerta.Visible = true;
+            }
+
+            // 2. Colorear las filas según su estado (Rojo para "Sin Stock" / Rosado-Naranja para "Stock Bajo")
+            PintarFilasAlertas();
+
+            // 3. Aplicar estilo moderno a la grilla (Igual al de Reportes)
+            EstilizarDataGridViewDashboard(); // <--- ¡Solo agregas esta línea aquí!
+
+            // 4. Quitar la selección de la primera fila por defecto
+            dgvAlertasStock.ClearSelection();
+        }
+
+        // Método para colorear las filas del DataGridView
+        private void PintarFilasAlertas()
+        {
+            foreach (DataGridViewRow row in dgvAlertasStock.Rows)
+            {
+                if (row.Cells["Estado"].Value != null)
+                {
+                    string estado = row.Cells["Estado"].Value.ToString();
+
+                    if (estado == "Sin Stock")
+                    {
+                        // Fondo rosado/rojo claro con texto rojo oscuro
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(254, 226, 226);
+                        row.DefaultCellStyle.ForeColor = Color.FromArgb(185, 28, 28);
+                    }
+                    else if (estado == "Stock Bajo")
+                    {
+                        // Fondo amarillo/naranja claro
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(254, 243, 199);
+                        row.DefaultCellStyle.ForeColor = Color.FromArgb(180, 83, 9);
+                    }
+                }
+            }
+        }
+
+        private void dgvAlertasStock_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            dgvAlertasStock.ClearSelection();
+        }
+
+        private void btnActualizarDashboard_Click(object sender, EventArgs e)
+        {
+            CargarDashboardCompleto();
+            dgvAlertasStock.ClearSelection(); // Asegura limpiar la selección
+        }
+
+        private void btnVerAlertasStock_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ActualizarGrillaAlertas();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar las alertas: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // 1. Método principal que hace la consulta a la base de datos y pinta las filas
+        private void RealizarBusquedaProductos()
+        {
+            try
+            {
+                BuscarDAL buscarDAL = new BuscarDAL();
+                string criterio = txtCriterioBusqueda.Text.Trim();
+
+                // Consulta los productos filtrados por el criterio escrito en la caja de texto
+                DataTable dtResultados = buscarDAL.BuscarProductos(criterio);
+
+                dgvResultadosBusqueda.DataSource = dtResultados;
+
+                // Pinta las filas automáticamente según el estado (Verde, Amarillo, Rojo)
+                PintarFilasBusqueda();
+
+                dgvResultadosBusqueda.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al realizar la búsqueda: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // 2. Método de pintado de filas según el estado del stock
+        private void PintarFilasBusqueda()
+        {
+            foreach (DataGridViewRow row in dgvResultadosBusqueda.Rows)
+            {
+                if (row.Cells["Estado"].Value != null)
+                {
+                    string estado = row.Cells["Estado"].Value.ToString();
+
+                    if (estado == "Sin Stock")
+                    {
+                        // Fondo rojo claro con texto rojo oscuro
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(254, 226, 226);
+                        row.DefaultCellStyle.ForeColor = Color.FromArgb(185, 28, 28);
+                    }
+                    else if (estado == "Stock Bajo")
+                    {
+                        // Fondo amarillo claro con texto naranja oscuro
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(254, 243, 199);
+                        row.DefaultCellStyle.ForeColor = Color.FromArgb(180, 83, 9);
+                    }
+                    else if (estado == "Normal")
+                    {
+                        // Fondo verde claro con texto verde oscuro
+                        row.DefaultCellStyle.BackColor = Color.FromArgb(220, 252, 231);
+                        row.DefaultCellStyle.ForeColor = Color.FromArgb(22, 101, 52);
+                    }
+                }
+            }
+        }
+
+        // 3. Evento del botón BUSCAR (La búsqueda se ejecuta SOLAMENTE al dar clic aquí)
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            RealizarBusquedaProductos();
+        }
+
+        // 4. Evento opcional: Permite buscar también presionando la tecla ENTER dentro de la caja de texto
+        private void txtCriterioBusqueda_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                RealizarBusquedaProductos();
+                e.Handled = true;
+                e.SuppressKeyPress = true; // Evita el sonido de alerta de Windows al presionar Enter
+            }
+        }
+
+        // 5. Evento del botón LIMPIAR: Borra el texto, recarga la tabla completa y regresa el foco
+        private void btnLimpiarBusqueda_Click(object sender, EventArgs e)
+        {
+            txtCriterioBusqueda.Clear();
+            RealizarBusquedaProductos();
+            txtCriterioBusqueda.Focus();
+        }
+
+        // 1. Cargar las opciones del ComboBox al iniciar (Llamarlo en el Form_Load)
+        private void CargarFiltrosReportes()
+        {
+            cmbFiltroTipo.Items.Clear();
+            cmbFiltroTipo.Items.Add("Todos los movimientos");
+            cmbFiltroTipo.Items.Add("Entrada");
+            cmbFiltroTipo.Items.Add("Salida");
+            cmbFiltroTipo.SelectedIndex = 0;
+        }
+
+        // 2. Método principal para generar el reporte de movimientos
+        private void GenerarReporteMovimientos()
+        {
+            try
+            {
+                DateTime desde = dtpFechaDesde.Value;
+                DateTime hasta = dtpFechaHasta.Value;
+
+                if (desde > hasta)
+                {
+                    MessageBox.Show("La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string tipo = cmbFiltroTipo.SelectedItem != null ? cmbFiltroTipo.SelectedItem.ToString() : "Todos los movimientos";
+
+                ReportesDAL reportesDAL = new ReportesDAL();
+                DataTable dtResultados = reportesDAL.ObtenerHistorialMovimientos(desde, hasta, tipo);
+
+                dgvReporteMovimientos.DataSource = dtResultados;
+
+                int totalRegistros = dtResultados.Rows.Count;
+                if (lblEstadoReporte != null)
+                {
+                    lblEstadoReporte.Text = totalRegistros > 0
+                        ? $"Se encontraron {totalRegistros} movimientos"
+                        : "No se encontraron movimientos en el rango seleccionado";
+                }
+
+                // Aplicar estilos modernos a la grilla y pintar tipos
+                EstilizarDataGridView();
+                PintarTiposMovimiento();
+
+                dgvReporteMovimientos.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar el reporte de movimientos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // 3. Estilo moderno para el DataGridView (elimina líneas clásicas de Windows)
+        private void EstilizarDataGridView()
+        {
+            // Ocultar encabezados de filas (la columna gris de la izquierda)
+            dgvReporteMovimientos.RowHeadersVisible = false;
+
+            // Hacer que las columnas se expandan al ancho total del DataGridView
+            dgvReporteMovimientos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            // Ajustar colores de fondo para eliminar el gris de la derecha/abajo
+            dgvReporteMovimientos.BackgroundColor = Color.White;
+            dgvReporteMovimientos.DefaultCellStyle.BackColor = Color.White;
+            dgvReporteMovimientos.BorderStyle = BorderStyle.None;
+
+            // Quitar bordes clásicos
+            dgvReporteMovimientos.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvReporteMovimientos.GridColor = Color.FromArgb(224, 224, 224);
+
+            // Permitir estilos personalizados en los encabezados
+            dgvReporteMovimientos.EnableHeadersVisualStyles = false;
+            dgvReporteMovimientos.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvReporteMovimientos.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(55, 71, 79);
+            dgvReporteMovimientos.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvReporteMovimientos.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvReporteMovimientos.ColumnHeadersHeight = 35;
+
+            // Estilos de filas
+            dgvReporteMovimientos.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 247, 250);
+            dgvReporteMovimientos.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+            dgvReporteMovimientos.DefaultCellStyle.ForeColor = Color.FromArgb(33, 33, 33);
+            dgvReporteMovimientos.DefaultCellStyle.SelectionBackColor = Color.FromArgb(63, 81, 181);
+            dgvReporteMovimientos.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvReporteMovimientos.RowTemplate.Height = 30;
+
+            // Ocultar la columna ID
+            if (dgvReporteMovimientos.Columns["ID"] != null)
+            {
+                dgvReporteMovimientos.Columns["ID"].Visible = false;
+            }
+        }
+
+        // 4. Método para colorear dinámicamente la columna "Tipo"
+        private void PintarTiposMovimiento()
+        {
+            foreach (DataGridViewRow row in dgvReporteMovimientos.Rows)
+            {
+                if (row.Cells["Tipo"].Value != null)
+                {
+                    string tipo = row.Cells["Tipo"].Value.ToString();
+
+                    if (tipo == "Entrada" || tipo == "Ingreso")
+                    {
+                        row.Cells["Tipo"].Style.ForeColor = Color.FromArgb(22, 101, 52); 
+                row.Cells["Tipo"].Style.SelectionForeColor = Color.FromArgb(22, 101, 52);
+                    }
+                    else if (tipo == "Salida")
+                    {
+                        row.Cells["Tipo"].Style.ForeColor = Color.FromArgb(185, 28, 28);
+                row.Cells["Tipo"].Style.SelectionForeColor = Color.FromArgb(185, 28, 28);
+                    }
+                }
+            }
+        }
+
+        // 5. Método para exportar a formato CSV / Excel
+        private void ExportarDataGridViewaCSV()
+        {
+            try
+            {
+                if (dgvReporteMovimientos.Rows.Count == 0)
+                {
+                    MessageBox.Show("No hay datos cargados en la tabla para exportar. Primero genere un reporte.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Archivo CSV (*.csv)|*.csv|Todos los archivos (*.*)|*.*";
+                saveFileDialog.FileName = $"Reporte_Movimientos_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8))
+                    {
+                        for (int i = 0; i < dgvReporteMovimientos.Columns.Count; i++)
+                        {
+                            writer.Write(dgvReporteMovimientos.Columns[i].HeaderText);
+                            if (i < dgvReporteMovimientos.Columns.Count - 1)
+                            {
+                                writer.Write(",");
+                            }
+                        }
+                        writer.WriteLine();
+
+                        foreach (DataGridViewRow row in dgvReporteMovimientos.Rows)
+                        {
+                            if (!row.IsNewRow)
+                            {
+                                for (int i = 0; i < dgvReporteMovimientos.Columns.Count; i++)
+                                {
+                                    string valor = row.Cells[i].Value != null ? row.Cells[i].Value.ToString() : "";
+                                    valor = valor.Replace(",", " ");
+                                    writer.Write(valor);
+
+                                    if (i < dgvReporteMovimientos.Columns.Count - 1)
+                                    {
+                                        writer.Write(",");
+                                    }
+                                }
+                                writer.WriteLine();
+                            }
+                        }
+                    }
+
+                    MessageBox.Show("Reporte exportado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al exportar el reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // 6. Eventos de los botones de la interfaz
+        private void btnGenerarReporte_Click(object sender, EventArgs e)
+        {
+            GenerarReporteMovimientos();
+        }
+
+        private void btnExportarReporte_Click(object sender, EventArgs e)
+        {
+            ExportarDataGridViewaCSV();
+        }
+
+        private void EstilizarDataGridViewDashboard()
+        {
+            if (dgvAlertasStock == null) return;
+
+            dgvAlertasStock.RowHeadersVisible = false;
+            dgvAlertasStock.BorderStyle = BorderStyle.None;
+            dgvAlertasStock.BackgroundColor = Color.White;
+            dgvAlertasStock.DefaultCellStyle.BackColor = Color.White;
+            dgvAlertasStock.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvAlertasStock.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvAlertasStock.GridColor = Color.FromArgb(224, 224, 224);
+
+            dgvAlertasStock.EnableHeadersVisualStyles = false;
+            dgvAlertasStock.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvAlertasStock.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(55, 71, 79);
+            dgvAlertasStock.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvAlertasStock.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvAlertasStock.ColumnHeadersHeight = 35;
+
+            dgvAlertasStock.DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+            dgvAlertasStock.DefaultCellStyle.ForeColor = Color.FromArgb(33, 33, 33);
+            dgvAlertasStock.DefaultCellStyle.SelectionBackColor = Color.FromArgb(63, 81, 181);
+            dgvAlertasStock.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvAlertasStock.RowTemplate.Height = 30;
+
+            if (dgvAlertasStock.Columns["IdProducto"] != null)
+            {
+                dgvAlertasStock.Columns["IdProducto"].Visible = false;
+            }
         }
     }
 }
