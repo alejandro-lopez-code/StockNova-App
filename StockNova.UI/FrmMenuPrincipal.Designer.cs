@@ -129,6 +129,7 @@
             materialLabel25 = new MaterialSkin.Controls.MaterialLabel();
             cardHerramientasAdmin = new MaterialSkin.Controls.MaterialCard();
             pnlEstadoConfig = new Panel();
+            lblEstadoConfiguracion = new MaterialSkin.Controls.MaterialLabel();
             lblEstadoConfig = new MaterialSkin.Controls.MaterialLabel();
             btnResetSistema = new MaterialSkin.Controls.MaterialButton();
             btnLimpiarTodo = new MaterialSkin.Controls.MaterialButton();
@@ -1696,11 +1697,25 @@
             // pnlEstadoConfig
             // 
             pnlEstadoConfig.BackColor = Color.White;
+            pnlEstadoConfig.Controls.Add(lblEstadoConfiguracion);
             pnlEstadoConfig.Controls.Add(lblEstadoConfig);
             pnlEstadoConfig.Location = new Point(70, 185);
             pnlEstadoConfig.Name = "pnlEstadoConfig";
             pnlEstadoConfig.Size = new Size(867, 39);
             pnlEstadoConfig.TabIndex = 5;
+            // 
+            // lblEstadoConfiguracion
+            // 
+            lblEstadoConfiguracion.Depth = 0;
+            lblEstadoConfiguracion.Dock = DockStyle.Fill;
+            lblEstadoConfiguracion.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            lblEstadoConfiguracion.Location = new Point(0, 0);
+            lblEstadoConfiguracion.MouseState = MaterialSkin.MouseState.HOVER;
+            lblEstadoConfiguracion.Name = "lblEstadoConfiguracion";
+            lblEstadoConfiguracion.Size = new Size(867, 39);
+            lblEstadoConfiguracion.TabIndex = 1;
+            lblEstadoConfiguracion.Text = "Listo para ejecutar tareas de administración.";
+            lblEstadoConfiguracion.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblEstadoConfig
             // 
@@ -1731,6 +1746,7 @@
             btnResetSistema.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnResetSistema.UseAccentColor = false;
             btnResetSistema.UseVisualStyleBackColor = true;
+            btnResetSistema.Click += btnResetSistema_Click;
             // 
             // btnLimpiarTodo
             // 
@@ -1750,6 +1766,7 @@
             btnLimpiarTodo.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnLimpiarTodo.UseAccentColor = false;
             btnLimpiarTodo.UseVisualStyleBackColor = true;
+            btnLimpiarTodo.Click += btnLimpiarTodo_Click;
             // 
             // btnInicializarSistema
             // 
@@ -1769,6 +1786,7 @@
             btnInicializarSistema.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnInicializarSistema.UseAccentColor = false;
             btnInicializarSistema.UseVisualStyleBackColor = true;
+            btnInicializarSistema.Click += btnInicializarSistema_Click;
             // 
             // btnValidarIntegridad
             // 
@@ -1788,6 +1806,7 @@
             btnValidarIntegridad.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnValidarIntegridad.UseAccentColor = false;
             btnValidarIntegridad.UseVisualStyleBackColor = true;
+            btnValidarIntegridad.Click += btnValidarIntegridad_Click;
             // 
             // lblHerramientasAdmin
             // 
@@ -2000,5 +2019,6 @@
         private MaterialSkin.Controls.MaterialLabel lblMensajeAlerta;
         private MaterialSkin.Controls.MaterialLabel lblEstadoReporte;
         private DataGridView dgvReporteMovimientos;
+        private MaterialSkin.Controls.MaterialLabel lblEstadoConfiguracion;
     }
 }

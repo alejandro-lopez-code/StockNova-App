@@ -881,5 +881,96 @@ namespace StockNova.UI
                 dgvAlertasStock.Columns["IdProducto"].Visible = false;
             }
         }
+
+        // ==========================================
+        // MÓDULO DE CONFIGURACIÓN - STOCKNOVA
+        // ==========================================
+
+        private void MostrarMensajeConfiguracion(string texto, bool esExito)
+        {
+            if (lblEstadoConfiguracion != null)
+            {
+                lblEstadoConfiguracion.Text = texto;
+                lblEstadoConfiguracion.Visible = true;
+
+                if (esExito)
+                {
+                    lblEstadoConfiguracion.BackColor = Color.FromArgb(220, 252, 231); // Verde suave
+                    lblEstadoConfiguracion.ForeColor = Color.FromArgb(22, 101, 52);
+                }
+                else
+                {
+                    lblEstadoConfiguracion.BackColor = Color.FromArgb(254, 226, 226); // Rojo suave
+                    lblEstadoConfiguracion.ForeColor = Color.FromArgb(185, 28, 28);
+                }
+            }
+            else
+            {
+                MessageBox.Show(texto, esExito ? "Éxito" : "Atención", MessageBoxButtons.OK,
+                                esExito ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+            }
+        }
+
+        // Evento: VALIDAR INTEGRIDAD
+        private void btnValidarIntegridad_Click(object sender, EventArgs e)
+        {
+            ConfiguracionDAL configDAL = new ConfiguracionDAL();
+            bool valido = configDAL.ValidarIntegridadBaseDatos(out string mensaje);
+            MostrarMensajeConfiguracion(mensaje, valido);
+        }
+
+        // Evento: INICIALIZAR SISTEMA
+        private void btnInicializarSistema_Click(object sender, EventArgs e)
+        {
+            ConfiguracionDAL configDAL = new ConfiguracionDAL();
+            bool exito = configDAL.InicializarSistema(out string mensaje);
+            MostrarMensajeConfiguracion(mensaje, exito);
+        }
+
+        // Evento: LIMPIAR TODO (Historial de movimientos)
+        private void btnLimpiarTodo_Click(object sender, EventArgs e)
+        {
+            DialogResult confirmacion = MessageBox.Show(
+                "¿Está seguro de que desea limpiar todo el historial de movimientos?\nEsta acción no se puede deshacer.",
+                "Confirmación de Seguridad",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (confirmacion == DialogResult.Yes)
+            {
+                ConfiguracionDAL configDAL = new ConfiguracionDAL();
+                bool exito = configDAL.LimpiarHistorialMovimientos(out string mensaje);
+                MostrarMensajeConfiguracion(mensaje, exito);
+            }
+        }
+
+        // Evento: RESET SISTEMA
+        private void btnResetSistema_Click(object sender, EventArgs e)
+        {
+            DialogResult primeraConfirmacion = MessageBox.Show(
+                "⚠️ ¡ADVERTENCIA CRÍTICA!\n\n¿Está totalmente seguro de que desea resetear el sistema?\nSe vaciarán las transacciones y los stocks de los productos pasarán a 0.",
+                "Reset de Sistema - Paso 1 de 2",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Error
+            );
+
+            if (primeraConfirmacion == DialogResult.Yes)
+            {
+                DialogResult segundaConfirmacion = MessageBox.Show(
+                    "Confirme nuevamente por favor. ¿Proceder con el Reset completo?",
+                    "Reset de Sistema - Paso Final",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Stop
+                );
+
+                if (segundaConfirmacion == DialogResult.Yes)
+                {
+                    ConfiguracionDAL configDAL = new ConfiguracionDAL();
+                    bool exito = configDAL.ResetearSistemaCompleto(out string mensaje);
+                    MostrarMensajeConfiguracion(mensaje, exito);
+                }
+            }
+        }
     }
 }
