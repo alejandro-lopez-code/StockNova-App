@@ -290,8 +290,9 @@ namespace StockNova.UI
         {
             using (System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog())
             {
-                sfd.Filter = "Archivo CSV (*.csv)|*.csv";
-                sfd.FileName = "Inventario_StockNova_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
+                // Cambiamos el filtro a archivo de Excel XML para soportar estilos de color y negrita
+                sfd.Filter = "Archivo de Excel (*.xls)|*.xls";
+                sfd.FileName = "Inventario_StockNova_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xls";
 
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -299,28 +300,48 @@ namespace StockNova.UI
                     {
                         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
+                        // Estructura XML básica para que Excel reconozca estilos (Cabecera con fondo oscuro y texto blanco)
+                        sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+                        sb.AppendLine("<head>");
+                        sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("  table { border-collapse: collapse; width: 100%; font-family: 'Segoe UI', sans-serif; }");
+                        sb.AppendLine("  th { background-color: #1E293B; color: #FFFFFF; font-weight: bold; text-align: center; padding: 10px; border: 1px solid #CBD5E1; }");
+                        sb.AppendLine("  td { padding: 8px; border: 1px solid #CBD5E1; text-align: left; }");
+                        sb.AppendLine("</style>");
+                        sb.AppendLine("</head>");
+                        sb.AppendLine("<body>");
+                        sb.AppendLine("<table>");
+
                         // Cabeceras de columnas
+                        sb.AppendLine("<tr>");
                         foreach (System.Windows.Forms.DataGridViewColumn col in dgvInventario.Columns)
                         {
-                            sb.Append(col.HeaderText + ",");
+                            sb.Append("<th>" + col.HeaderText + "</th>");
                         }
-                        sb.AppendLine();
+                        sb.AppendLine("</tr>");
 
-                        // Filas de datos visibles en la tabla
+                        // Filas de datos
                         foreach (System.Windows.Forms.DataGridViewRow row in dgvInventario.Rows)
                         {
                             if (!row.IsNewRow)
                             {
+                                sb.AppendLine("<tr>");
                                 foreach (System.Windows.Forms.DataGridViewCell cell in row.Cells)
                                 {
-                                    sb.Append("\"" + (cell.Value?.ToString() ?? "") + "\",");
+                                    string valor = cell.Value?.ToString() ?? "";
+                                    sb.Append("<td>" + System.Net.WebUtility.HtmlEncode(valor) + "</td>");
                                 }
-                                sb.AppendLine();
+                                sb.AppendLine("</tr>");
                             }
                         }
 
+                        sb.AppendLine("</table>");
+                        sb.AppendLine("</body>");
+                        sb.AppendLine("</html>");
+
                         System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), System.Text.Encoding.UTF8);
-                        System.Windows.Forms.MessageBox.Show("Inventario exportado exitosamente.", "Éxito", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                        System.Windows.Forms.MessageBox.Show("Reporte de inventario exportado con éxito.", "Éxito", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
@@ -785,58 +806,66 @@ namespace StockNova.UI
         // 5. Método para exportar a formato CSV / Excel
         private void ExportarDataGridViewaCSV()
         {
-            try
+            using (System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog())
             {
-                if (dgvReporteMovimientos.Rows.Count == 0)
-                {
-                    MessageBox.Show("No hay datos cargados en la tabla para exportar. Primero genere un reporte.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                // Filtro a archivo de Excel manteniendo la estructura limpia que te gustó
+                sfd.Filter = "Archivo de Excel (*.xls)|*.xls";
+                sfd.FileName = "Reporte_Movimientos_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xls";
 
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Archivo CSV (*.csv)|*.csv|Todos los archivos (*.*)|*.*";
-                saveFileDialog.FileName = $"Reporte_Movimientos_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8))
+                    try
                     {
-                        for (int i = 0; i < dgvReporteMovimientos.Columns.Count; i++)
-                        {
-                            writer.Write(dgvReporteMovimientos.Columns[i].HeaderText);
-                            if (i < dgvReporteMovimientos.Columns.Count - 1)
-                            {
-                                writer.Write(",");
-                            }
-                        }
-                        writer.WriteLine();
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-                        foreach (DataGridViewRow row in dgvReporteMovimientos.Rows)
+                        // Estructura idéntica a la del inventario (Cabecera con fondo oscuro y texto blanco)
+                        sb.AppendLine("<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+                        sb.AppendLine("<head>");
+                        sb.AppendLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+                        sb.AppendLine("<style>");
+                        sb.AppendLine("  table { border-collapse: collapse; width: 100%; font-family: 'Segoe UI', sans-serif; }");
+                        sb.AppendLine("  th { background-color: #1E293B; color: #FFFFFF; font-weight: bold; text-align: center; padding: 10px; border: 1px solid #CBD5E1; }");
+                        sb.AppendLine("  td { padding: 8px; border: 1px solid #CBD5E1; text-align: left; }");
+                        sb.AppendLine("</style>");
+                        sb.AppendLine("</head>");
+                        sb.AppendLine("<body>");
+                        sb.AppendLine("<table>");
+
+                        // Cabeceras de columnas usando tu DataGridView real de movimientos
+                        sb.AppendLine("<tr>");
+                        foreach (System.Windows.Forms.DataGridViewColumn col in dgvReporteMovimientos.Columns)
+                        {
+                            sb.Append("<th>" + col.HeaderText + "</th>");
+                        }
+                        sb.AppendLine("</tr>");
+
+                        // Filas de datos
+                        foreach (System.Windows.Forms.DataGridViewRow row in dgvReporteMovimientos.Rows)
                         {
                             if (!row.IsNewRow)
                             {
-                                for (int i = 0; i < dgvReporteMovimientos.Columns.Count; i++)
+                                sb.AppendLine("<tr>");
+                                foreach (System.Windows.Forms.DataGridViewCell cell in row.Cells)
                                 {
-                                    string valor = row.Cells[i].Value != null ? row.Cells[i].Value.ToString() : "";
-                                    valor = valor.Replace(",", " ");
-                                    writer.Write(valor);
-
-                                    if (i < dgvReporteMovimientos.Columns.Count - 1)
-                                    {
-                                        writer.Write(",");
-                                    }
+                                    string valor = cell.Value?.ToString() ?? "";
+                                    sb.Append("<td>" + System.Net.WebUtility.HtmlEncode(valor) + "</td>");
                                 }
-                                writer.WriteLine();
+                                sb.AppendLine("</tr>");
                             }
                         }
-                    }
 
-                    MessageBox.Show("Reporte exportado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        sb.AppendLine("</table>");
+                        sb.AppendLine("</body>");
+                        sb.AppendLine("</html>");
+
+                        System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), System.Text.Encoding.UTF8);
+                        System.Windows.Forms.MessageBox.Show("Reporte de movimientos exportado con éxito.", "Éxito", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Error al exportar el archivo: " + ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al exportar el reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

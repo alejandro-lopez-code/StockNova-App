@@ -91,7 +91,7 @@
             btnIngresar.Depth = 0;
             btnIngresar.HighEmphasis = true;
             btnIngresar.Icon = null;
-            btnIngresar.Location = new Point(57, 486);
+            btnIngresar.Location = new Point(179, 484);
             btnIngresar.Margin = new Padding(5, 8, 5, 8);
             btnIngresar.MouseState = MaterialSkin.MouseState.HOVER;
             btnIngresar.Name = "btnIngresar";
@@ -117,6 +117,7 @@
             // 
             // FrmLogin
             // 
+            AcceptButton = btnIngresar;
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(468, 566);
