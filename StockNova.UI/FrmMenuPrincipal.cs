@@ -17,6 +17,14 @@ namespace StockNova.UI
             InitializeComponent();
             _usuarioLogueado = usuario;
 
+            // --- CONTROL DE ACCESO BASADO EN ROLES (RBAC) ---
+            if (_usuarioLogueado.Rol.Trim().ToLower() == "vendedor")
+            {
+                // Ocultamos los apartados que el vendedor no debe ver
+                tcMenuPrincipal.TabPages.Remove(tabConfiguracion);
+                tcMenuPrincipal.TabPages.Remove(tabReportes);
+            }
+
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
@@ -32,7 +40,7 @@ namespace StockNova.UI
             this.DrawerHighlightWithAccent = false;
             this.DrawerBackgroundWithAccent = false;
 
-            this.Text = $"StockNova - Usuario: {_usuarioLogueado.NombreUsuario} ({_usuarioLogueado.Rol})";
+            this.Text = $"Menú Principal - Usuario: {_usuarioLogueado.NombreUsuario} ({_usuarioLogueado.Rol})";
 
             // Carga las filas de prueba y les aplica el color
             CargarDatosPrueba();
@@ -40,6 +48,20 @@ namespace StockNova.UI
             dgvInventario.ClearSelection();
             dgvInventario.CurrentCell = null;
 
+        }
+
+        private void AplicarPermisosPorRol()
+        {
+            if (_usuarioLogueado.Rol == "Vendedor")
+            {
+                // Oculta/Remueve los apartados administrativos para el Vendedor
+                tcMenuPrincipal.TabPages.Remove(tabConfiguracion);
+                tcMenuPrincipal.TabPages.Remove(tabReportes);
+            }
+            else if (_usuarioLogueado.Rol == "Administrador")
+            {
+                // El Administrador mantiene la visibilidad completa de todos los apartados
+            }
         }
 
         private void tcMenuPrincipal_SelectedIndexChanged(object sender, EventArgs e)

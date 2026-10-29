@@ -120,7 +120,7 @@
             AcceptButton = btnIngresar;
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(468, 566);
+            ClientSize = new Size(469, 664);
             Controls.Add(pbUserIcon);
             Controls.Add(btnIngresar);
             Controls.Add(txtContrasena);
@@ -129,7 +129,7 @@
             Name = "FrmLogin";
             Padding = new Padding(3, 85, 3, 4);
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "StockNova - Inicio de Sesión";
+            Text = "StockNova ";
             ((System.ComponentModel.ISupportInitialize)pbUserIcon).EndInit();
             ResumeLayout(false);
             PerformLayout();

@@ -274,9 +274,9 @@
             btnVerAlertas.MouseState = MaterialSkin.MouseState.HOVER;
             btnVerAlertas.Name = "btnVerAlertas";
             btnVerAlertas.NoAccentTextColor = Color.Empty;
-            btnVerAlertas.Size = new Size(187, 36);
+            btnVerAlertas.Size = new Size(196, 36);
             btnVerAlertas.TabIndex = 2;
-            btnVerAlertas.Text = "VER ALERTAS DE STOCK";
+            btnVerAlertas.Text = "&VER ALERTAS DE STOCK";
             btnVerAlertas.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
             btnVerAlertas.UseAccentColor = false;
             btnVerAlertas.UseVisualStyleBackColor = true;
@@ -294,9 +294,9 @@
             btnActualizarDashboard.MouseState = MaterialSkin.MouseState.HOVER;
             btnActualizarDashboard.Name = "btnActualizarDashboard";
             btnActualizarDashboard.NoAccentTextColor = Color.Empty;
-            btnActualizarDashboard.Size = new Size(199, 36);
+            btnActualizarDashboard.Size = new Size(209, 36);
             btnActualizarDashboard.TabIndex = 1;
-            btnActualizarDashboard.Text = "ACTUALIZAR DASHBOARD";
+            btnActualizarDashboard.Text = "&ACTUALIZAR DASHBOARD";
             btnActualizarDashboard.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             btnActualizarDashboard.UseAccentColor = false;
             btnActualizarDashboard.UseVisualStyleBackColor = true;
@@ -1861,9 +1861,10 @@
             ClientSize = new Size(1308, 664);
             Controls.Add(tcMenuPrincipal);
             DrawerTabControl = tcMenuPrincipal;
+            KeyPreview = true;
             Name = "FrmMenuPrincipal";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "FrmMenuPrincipal";
+            Text = "Menú Principal";
             Shown += FrmMenuPrincipal_Shown;
             tcMenuPrincipal.ResumeLayout(false);
             tabDashboard.ResumeLayout(false);

@@ -28,7 +28,7 @@ namespace StockNova.UI
             txtUsuario.UseAccent = false;
             txtContrasena.UseAccent = false;
 
-            this.Text = "StockNova - Inicio de Sesión";
+            this.Text = "StockNova";
         }
 
         private void btnIngresar_Click(object sender, EventArgs e)
@@ -67,6 +67,13 @@ namespace StockNova.UI
                 MessageBox.Show(ex.Message, "Error de Inicio de Sesión",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void FrmLogin_Shown(object sender, EventArgs e)
+        {
+            // Reemplaza 'txtUsuario' por el nombre exacto de tu TextBox de usuario
+            txtUsuario.Focus();
+            txtUsuario.Select();
         }
     }
 }
